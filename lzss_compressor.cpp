@@ -43,8 +43,8 @@ Compressed_message Lzss_compressor::compress (const std::string& str) const {
 			m = std::distance(d_i+m, b_i);
 
 		m_len = buf.length();
-		if (m_len == 0) {
-			msg << "0'" << b_i[m_len] << "'";
+		if (m_len < 2) {
+			msg << "0'" << b_i[0] << "'";
 			logic_size += 9;
 		} else { 
 			msg << "1<" << m << "," << m_len 
@@ -53,10 +53,10 @@ Compressed_message Lzss_compressor::compress (const std::string& str) const {
 						+  std::ceil(std::log2(buf_size_)) + 9;
 		}
 
-		b_i += m_len+1;
-		//At the beginning, there are no enough read characters to
+		b_i += (m_len < 2) ? 1 : m_len+1;
+		//At the beginning, there are not enough read characters to
 		// fill the dictionary full.
-		d_i += std::distance(d_i, b_i) <= win_size_-b_size ? 0 : m_len+1;
+		d_i += (std::distance(d_i, b_i) <= win_size_-b_size) ? 0 : (m_len < 2) ? 1 : m_len+1;
 		//Also at the end of input, there are not enough characters to
 		// fill the buffer full.  
 		b_size = std::min((int)(std::distance(b_i, str.end())), b_size);

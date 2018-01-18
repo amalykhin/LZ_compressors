@@ -7,7 +7,7 @@
 #include "compressed_message.h"
 
 int main (int argc, char **argv) {
-	if (argc < 5) {
+	if (argc < 3) {
 			std::cerr << "Usage: ./a.out FILE DICTIONARY_SIZE \n";
 			return 1;
 	}
@@ -18,9 +18,10 @@ int main (int argc, char **argv) {
 	istream >> str.rdbuf();
 
 	int dict_size = std::stoi(argv[2]);
-	Lzss_compressor lz78(dict_size);
-	Compressed_message msg = lzss.compress(str.str());
-	std::cout << str.str().size()*8 << " " << msg.get_size() << "\n";
+	Lz78_compressor lz78(dict_size);
+	Compressed_message msg = lz78.compress(str.str());
+	std::cout << 1-msg.get_size()/(str.str().size()*8.0) << "\n";
+	std::cout << msg << "\n";
 	
 	istream.close();
 

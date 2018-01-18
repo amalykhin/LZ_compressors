@@ -3,12 +3,12 @@
 #include <iostream>
 #include <sstream>
 #include <fstream>
-#include "lz78_compressor.h"
+#include "lzss_compressor.h"
 #include "compressed_message.h"
 
 int main (int argc, char **argv) {
-	if (argc < 5) {
-			std::cerr << "Usage: ./a.out FILE DICTIONARY_SIZE \n";
+	if (argc < 4) {
+			std::cerr << "Usage: ./a.out FILE WINDOW_SIZE BUFFER_SIZE \n";
 			return 1;
 	}
 
@@ -17,10 +17,12 @@ int main (int argc, char **argv) {
 	std::ostringstream str;
 	istream >> str.rdbuf();
 
-	int dict_size = std::stoi(argv[2]);
-	Lzss_compressor lz78(dict_size);
+	int win_size = std::stoi(argv[2]);
+	int buf_size = std::stoi(argv[3]);
+	Lzss_compressor lzss(win_size, buf_size);
 	Compressed_message msg = lzss.compress(str.str());
-	std::cout << str.str().size()*8 << " " << msg.get_size() << "\n";
+	std::cout << 1-msg.get_size()/(str.str().size()*8.0) << "\n";
+	std::cout << msg << "\n";
 	
 	istream.close();
 

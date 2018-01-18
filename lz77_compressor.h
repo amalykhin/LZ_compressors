@@ -14,7 +14,6 @@ private:
 
 	int win_size_;	
 	int buf_size_;
-	int logic_size_;
 };
 
 #endif
